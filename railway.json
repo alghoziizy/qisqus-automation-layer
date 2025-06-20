@@ -1,0 +1,9 @@
+{
+  "build": {
+    "command": "cd cmd && go build -o ../out",
+    "watchPatterns": ["**/*.go", "go.mod"]
+  },
+  "deploy": {
+    "startCommand": "./out"
+  }
+}
