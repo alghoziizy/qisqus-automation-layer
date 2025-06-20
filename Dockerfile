@@ -1,5 +1,4 @@
-FROM golang:1.21  # Gunakan versi yang valid (1.23 belum ada)
-
+FROM golang:1.21  
 WORKDIR /app
 
 # Pertama copy mod/sum untuk caching
