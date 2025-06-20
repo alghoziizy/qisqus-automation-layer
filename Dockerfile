@@ -1,22 +1,17 @@
-# Dockerfile
-FROM golang:1.23
+FROM golang:1.21  # Gunakan versi yang valid (1.23 belum ada)
 
-# Set working directory
 WORKDIR /app
 
-# Copy go mod dan sum dulu (untuk cache build layer dependency)
-COPY go.mod ./
-COPY go.sum ./
+# Pertama copy mod/sum untuk caching
+COPY git/go.mod .
+COPY git/go.sum .
 RUN go mod download
 
-# Copy semua source code ke dalam container
-COPY . .
+# Copy seluruh project
+COPY git .
 
-# Build app
-RUN go build -o app .
+# Build dari folder cmd
+RUN go build -o app ./cmd
 
-# Expose port (default Gin = 8080)
 EXPOSE 8080
-
-# Jalankan binary
 CMD ["./app"]
