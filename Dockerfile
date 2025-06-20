@@ -1,17 +1,16 @@
-FROM golang:1.23.0
-
+# Build stage
+FROM golang:1.21-alpine AS builder
 WORKDIR /app
-
-# Copy mod/sum pertama untuk caching
-COPY go.mod .
-COPY go.sum .
+COPY go.mod go.sum ./
 RUN go mod download
-
-# Copy semua file
 COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -o /app/main ./cmd/
 
-# Build aplikasi
-RUN go build -o app ./cmd
+# Runtime stage
+FROM alpine:latest
+WORKDIR /app
+COPY --from=builder /app/main .
+COPY --from=builder /app/.env .  # Jika menggunakan .env
 
 EXPOSE 8080
-CMD ["./app"]
+CMD ["./main"]
