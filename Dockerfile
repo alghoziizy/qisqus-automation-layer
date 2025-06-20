@@ -1,15 +1,16 @@
-FROM golang:1.21  
+FROM golang:1.21
+
 WORKDIR /app
 
-# Pertama copy mod/sum untuk caching
-COPY git/go.mod .
-COPY git/go.sum .
+# Copy mod/sum pertama untuk caching
+COPY go.mod .
+COPY go.sum .
 RUN go mod download
 
-# Copy seluruh project
-COPY git .
+# Copy semua file
+COPY . .
 
-# Build dari folder cmd
+# Build aplikasi
 RUN go build -o app ./cmd
 
 EXPOSE 8080
