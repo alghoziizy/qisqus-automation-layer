@@ -1,30 +1,14 @@
-version: '3.8'
-
 services:
   app:
     build: .
-    ports:
-      - "8080:8080"
     environment:
-      - DB_HOST=host.docker.internal  # Khusus Windows/Mac
-      # - DB_HOST=172.17.0.1         # Untuk Linux
-      - DB_USER=postgres
-      - DB_PASS=postgres
-      - DB_NAME=qiscus_allocator
+      - DB_HOST=db  # <-- Gunakan nama service
       - DB_PORT=5432
-    depends_on:
-      - db
 
   db:
     image: postgres:13
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=qiscus_allocator
     ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-volumes:
-  postgres_data:
+      - "5432:5432"  # Port di host (untuk akses dari luar Docker)
