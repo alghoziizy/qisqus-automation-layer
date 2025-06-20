@@ -1,14 +1,38 @@
+version: '3.8'
+
 services:
   app:
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
     environment:
-      - DB_HOST=db  # <-- Gunakan nama service
+      - DB_HOST=db  # Nama service database
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - DB_NAME=qiscus_allocator
       - DB_PORT=5432
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
 
   db:
-    image: postgres:13
+    image: postgres:13-alpine
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=qiscus_allocator
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     ports:
-      - "5432:5432"  # Port di host (untuk akses dari luar Docker)
+      - "5432:5432"  # Hanya untuk development
+
+volumes:
+  postgres_data:
